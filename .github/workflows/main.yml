@@ -39,28 +39,26 @@ jobs:
           mkdir out
           python3 -m twrpdtgen -o ./out/ ./${{ github.event.inputs.IMG }}
           
-      - name: 打压缩包
-        run: |
-          ls
-          cd ./out
-          zip -r -9 DeviceTree.zip ./*
-          ls 
+
           
       - name: 上传
         uses: actions/upload-artifact@main
         with:  
           name: TWRP_Device_Tree-${{ github.run_id }}  
-          path: ./out/DeviceTree.zip
+          path: ./out/*
           
       - name: 完成发布
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         env:  
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          
         with:
           files: ./out/DeviceTree.zip
-          name: TWRP_Device_Tree-${{ github.run_id }}
+          name: TWRP_Device_Tree-${{ jobs.<job_id>.上传 }}
           tag_name: ${{ github.run_id }}
           body: TWRP设备树-${{ github.event.inputs.IMG }}
+          draft: true
           
       - name: 清理编译流程  
         uses: Mattraks/delete-workflow-runs@main  
