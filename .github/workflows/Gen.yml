@@ -35,7 +35,7 @@ jobs:
       - name: 下载
         run: wget ${{ github.event.inputs.IMG }}
         
-      - name: 跑
+      - name: 执行
         run: |
           mkdir out
           python3 -m twrpdtgen -o ./out/ *.img
