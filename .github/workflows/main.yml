@@ -48,7 +48,7 @@ jobs:
           
       - name: 上传
         uses: actions/upload-artifact@main
-          with:  
+        with:  
           name: TWRP_Device_Tree-${{ github.run_id }}  
           path: ./out/DeviceTree.zip
           
