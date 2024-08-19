@@ -42,10 +42,10 @@ jobs:
       - name: 打压缩包
         run: |
           ls
-	  cd ./out
+          cd ./out
           zip -r -9 DeviceTree.zip ./*
           ls
-	  
+
       - name: 完成发布
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
