@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
 
       - name: 准备环境
         run: |
@@ -45,14 +45,12 @@ jobs:
         run: |
           ls
           zip -r DeviceTree.zip ./dt
-          
+          ls
       - name: 完成发布
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            ./DeviceTree.zip
+          files: ./DeviceTree.zip
           name: TWRP_Device_Tree-${{ github.run_id }}
           tag_name: ${{ github.run_id }}
           body: DeviceTree for TWRP
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
