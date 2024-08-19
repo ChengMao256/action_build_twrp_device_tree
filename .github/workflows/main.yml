@@ -24,7 +24,7 @@ jobs:
           sudo apt -y install cpio wget
 
       - name: 准备Python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ github.event.inputs.PY }}
           cache: 'pip'
@@ -39,7 +39,12 @@ jobs:
           mkdir out
           python3 -m twrpdtgen -o ./out/ ./${{ github.event.inputs.IMG }}
           
-
+      - name: 打压缩包
+        run: |
+          ls
+          cd ./out
+          zip -r -9 ../TWRP_Device_Tree-${{ github.run_id }}.zip ./*
+          ls
           
       - name: 上传
         uses: actions/upload-artifact@main
@@ -54,8 +59,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           
         with:
-          files: ./out/DeviceTree.zip
-          name: TWRP_Device_Tree-${{ jobs.<job_id>.上传 }}
+          files: ./TWRP_Device_Tree-${{ github.run_id }}.zip
+          name: TWRP_Device_Tree-${{ github.run_id }}
           tag_name: ${{ github.run_id }}
           body: TWRP设备树-${{ github.event.inputs.IMG }}
           draft: true
