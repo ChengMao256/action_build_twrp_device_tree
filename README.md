@@ -6,19 +6,23 @@
 
 -----
 
-- 2.将这个仓库fork到你的用户名下
+- 2.将这个仓库fork到你的用户名下并检测是否为公开
 
 -----
 
-- 3.将recovery.img或boot.img上传至一个可以提供直链下载的位置，这里我推荐直接将img文件上传至这个仓库，然后点进去点view raw，来获取直链
+- 3.将recovery.img或boot.img上传至main分支的根目录下
 
 -----
 
-- 4.点击[actions](../../actions) － make twrp device － run workflow，然后在那个链接框里面输入你刚刚获取的直链
+- 4.点击[actions](../../actions) －》 【生成TWRP设备树】 －》 【run workflow】，然后在【IMG_直链】框里面输入你刚刚上传文件的全名称
 
 -----
 
  - 5、填写完成后点击 'Run workflow' 开始运行
+
+-----
+
+- 6、目前无法从Releaases下载，可以进入Workflow，进入上传步骤，在最后有下载链接可以下载。
 
 -----
 ## 编译结果
