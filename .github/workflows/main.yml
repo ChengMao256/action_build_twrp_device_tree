@@ -37,7 +37,8 @@ jobs:
         
       - name: 执行
         run: |
-          mkdir out
+          ls
+          mkdir dt
           python3 -m twrpdtgen -o dt/ *.img
           
       - name: 打压缩包
