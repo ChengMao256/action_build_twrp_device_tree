@@ -3,11 +3,7 @@ name: Make TWRP Device
 on:
   workflow_dispatch:
     inputs:
-      LIBRARY_NAME:
-        description: '库名称'
-        required: true
-        default: 'Twrp_Device_Genter'
-      IMG_URL:
+      IMG_URL:    
         description: 'IMG_URL'
         required: true
         default: ''
@@ -15,7 +11,7 @@ on:
 jobs:
   build:
     if: github.event.repository.owner.id == github.event.sender.id
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     
     steps:
     - name: Check Out
@@ -25,29 +21,22 @@ jobs:
       run: |
         sudo apt update
         sudo apt -y install python python3 python-pip python3-pip cpio wget
-      
-    - name: 设置变量
-      run: |
-        echo "::set-output name=date::$(date +%F)"
-      id: var
-      
     - name: 准备TWRP生成器 
       run: |
         pip3 install twrpdtgen
         mkdir dt
-    
+      
     - name: 下载 boot 或 recovery 镜像
       run: |
-        wget ${{ github.event.inputs.IMG_URL }}
+        aria2c "${{ github.event.inputs.IMG_URL }}"
+        ls
       
     - name: 开始构建
       run: |
         python3 -m twrpdtgen -o dt/ *.img
-
     - name: 打包设备树
       run: |
         zip -r DeviceTree.zip ./dt
-
     - name: 完成发布
       uses: softprops/action-gh-release@v1
       with:
