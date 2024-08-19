@@ -45,7 +45,7 @@ jobs:
           cd ./out
           zip -r -9 DeviceTree.zip ./*
           
-    - name: 完成发布
+      - name: 完成发布
         uses: softprops/action-gh-release@v1
         with:
           files: |
