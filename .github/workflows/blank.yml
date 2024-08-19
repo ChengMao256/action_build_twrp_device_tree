@@ -1,0 +1,60 @@
+name: Make TWRP Device
+
+on:
+  workflow_dispatch:
+    inputs:
+      LIBRARY_NAME:
+        description: '库名称'
+        required: true
+        default: 'Twrp_Device_Genter'
+      IMG_URL:
+        description: 'IMG_URL'
+        required: true
+        default: 'https://github.com/Xpsoted/Action-Recovery-builder/releases/download/1404192362/recovery.img'
+
+jobs:
+  build:
+    if: github.event.repository.owner.id == github.event.sender.id
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - name: Check Out
+      uses: actions/checkout@main
+      
+      - name: 准备环境
+      run: |
+        sudo apt update
+        sudo apt -y install python python3 python-pip python3-pip cpio wget
+      
+    - name: 设置变量
+      run: |
+        echo "::set-output name=date::$(date +%F)"
+      id: var
+      
+    - name: 准备TWRP生成器 
+      run: |
+        pip3 install twrpdtgen
+        mkdir dt
+    
+    - name: 下载 boot 或 recovery 镜像
+      run: |
+        wget ${{ github.event.inputs.IMG_URL }}
+      
+    - name: 开始构建
+      run: |
+        python3 -m twrpdtgen -o dt/ *.img
+
+    - name: 打包设备树
+      run: |
+        zip -r DeviceTree.zip ./dt
+
+    - name: 完成发布
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./DeviceTree.zip
+        name: TWRP_Device_Tree-${{ github.run_id }}
+        tag_name: ${{ github.run_id }}
+        body: DeviceTree for twrp
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
