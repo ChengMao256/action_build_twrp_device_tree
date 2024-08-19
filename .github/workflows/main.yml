@@ -54,4 +54,5 @@ jobs:
           tag_name: ${{ github.run_id }}
           body: DeviceTree for TWRP
         env:
+	  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
