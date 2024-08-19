@@ -29,7 +29,7 @@ jobs:
           python-version: ${{ github.event.inputs.PY }}
           cache: 'pip'
           
-      - name: 准备twrpdtgen
+      - name: 准备TWRP生成器 
         run: pip3 install -r requirements.txt
         
       - name: 下载
@@ -45,13 +45,13 @@ jobs:
           cd ./out
           zip -r -9 DeviceTree.zip ./*
           
-      - name: Release
+    - name: 完成发布
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ./out/DeviceTree.zip
           name: TWRP_Device_Tree-${{ github.run_id }}
           tag_name: ${{ github.run_id }}
-          body: DeviceTree 4 TWRP
+          body: DeviceTree for TWRP
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
