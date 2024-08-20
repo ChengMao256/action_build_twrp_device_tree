@@ -43,7 +43,8 @@ jobs:
           Test: ""
           
       - name: 显示文件名
-          run: |
+        run: |
+          if true
             S_FullName="${{ github.event.input.FullName }}"
             S_FName="${{ github.event.input.FullName }}"
             S_EName="${{ github.event.input.FullName }}"
