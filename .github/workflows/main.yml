@@ -28,16 +28,16 @@ jobs:
         with:
           python-version: ${{ github.event.inputs.PY }}
           cache: 'pip'
-          
+  
       - name: 准备TWRP生成器 
         run: pip3 install -r twrpdtgen       
 
-        
+
       - name: 执行
         run: |
           mkdir out
           python3 -m twrpdtgen -o ./out/ ./${{ github.event.inputs.IMG }}
-          
+
       - name: 打压缩包
         run: |
           ls
@@ -50,7 +50,7 @@ jobs:
         with:  
           name: TWRP_Device_Tree-${{ github.run_id }}  
           path: ./out/*
-          
+
       - name: 配置上传会话
         uses: lhotari/action-upterm@v1
         with:
@@ -71,19 +71,19 @@ jobs:
           body: DeviceTree for twrp
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
-      
+
       ##- name: Release
       ##  uses: softprops/action-gh-release@v1
       ##  env:  
       ##    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          
+
       ##  with:
       ##    files: ./TWRP_Device_Tree-${{ github.run_id }}.zip
       ##    name: TWRP_Device_Tree-${{ github.run_id }}
       ##    tag_name: ${{ github.run_id }}
       ##    body: TWRP设备树-${{ github.event.inputs.IMG }}
       ##    draft: true
-          
+
       - name: 清理编译流程  
         uses: Mattraks/delete-workflow-runs@main  
         none: 上传到发布
