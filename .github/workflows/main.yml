@@ -11,6 +11,10 @@ on:
         description: 'IMG直链'
         required: true
         default: ''
+env:
+  FName: ""
+  EName: ""
+  FullName: ""
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,27 +43,29 @@ jobs:
         run: |
             wget ${{ github.event.inputs.IMG }}
 
-      - name: 获取文件名
-        id: filename
+      - name: 获取URL文件名
+        id: Urlname
+        if: startsWith(github.event.inputs.IMG, 'http') || startsWith(github.event.inputs.IMG, 'https') 
         run: |
-        if [[ "${{ startsWith(github.event.inputs.IMG, 'http') }}" == "true" || "${{ startsWith(github.event.inputs.IMG, 'https') }}" == "true" ]]; then
+        
           FullName=$(basename "${{ github.event.inputs.IMG }}")
           EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
           FName=$(basename "$FullName")
           echo "选择的文件是： $FullName"
-        else
-          FullName=$(basename "${{ github.event.inputs.IMG }}")
+          
+
+
+
+      - name: 获取常规文件名
+        id: filename
+        if: ${{ ! startsWith(github.event.inputs.IMG, "http") }} || ${{ ! startsWith(github.event.inputs.IMG, "https") }}
+        run: |
+          FullName="${{ github.event.inputs.IMG }}"
+          FName=$(basename "${{ github.event.inputs.IMG }}")
           EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
           echo "选择的文件是： $FullName"
           exit 1
-        fi
-        echo "::set-output name=FName::$FName"
-        echo "::set-output name=EName::$EName"
-        echo "::set-output name=FullName::$FullName"
-      env:
-        FName: ""
-        EName: ""
-        FullName: ""
+
 
 
       - name: 执行      	
