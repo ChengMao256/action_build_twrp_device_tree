@@ -28,10 +28,9 @@ jobs:
           RunMode: ""
 
       - name: 获取文件名
-        id: GetFileName
-        run: |
-          Test="${{ github.event.input.RunMode }}"
-          if ${{ $Test ='URL' }}
+        id: GetFileName        
+        run: |          
+          if startsWith( github.event.inputs.RunMode,'URL' )
           then
             FullName=$(basename "${{ github.event.inputs.IMG }}")
             EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
@@ -46,11 +45,11 @@ jobs:
         run: |
           if true
             S_FullName="${{ github.event.input.FullName }}"
-            S_FName="${{ github.event.input.FullName }}"
-            S_EName="${{ github.event.input.FullName }}"
-            echo "文件名是：$FName"
-            echo "扩展名是：$EName"
-            echo "文件全名是：$FullName"
+            S_FName="${{ github.event.input.FName }}"
+            S_EName="${{ github.event.input.EName }}"
+            echo "文件名是：$S_FName"
+            echo "扩展名是：$S_EName"
+            echo "文件全名是：$S_FullName"
           env:
             S_FullName: ""
             S_FName: ""
