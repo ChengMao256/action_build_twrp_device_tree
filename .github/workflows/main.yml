@@ -39,25 +39,27 @@ jobs:
         run: |
             wget ${{ github.event.inputs.IMG }}
 
-      - name: 获取文件名  
-        id: filename	  
+      - name: 获取文件名
+        id: filename
         run: |
-          if [startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')]; then
-            FullName=$(basename -- ${{ github.event.inputs.IMG }})
-            EName=$(echo $FullName | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
-            FName=$(basename -- $FullName)	    
-            echo "选择的文件是： $FullName"
-          else
-            FullName=$(basename -- ${{ github.event.inputs.IMG }})
-            EName=$($FullName | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
-            FullName=$(echo "选择的文件是： $FullName")
-            exit 1
-          fi
-          ##echo "::set-output name=filename::$FILENAME"
-        env: |
-          FName  
-              EName
-          FullName
+        if [[ "${{ startsWith(github.event.inputs.IMG, 'http') }}" == "true" || "${{ startsWith(github.event.inputs.IMG, 'https') }}" == "true" ]]; then
+          FullName=$(basename "${{ github.event.inputs.IMG }}")
+          EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
+          FName=$(basename "$FullName")
+          echo "选择的文件是： $FullName"
+        else
+          FullName=$(basename "${{ github.event.inputs.IMG }}")
+          EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
+          echo "选择的文件是： $FullName"
+          exit 1
+        fi
+        echo "::set-output name=FName::$FName"
+        echo "::set-output name=EName::$EName"
+        echo "::set-output name=FullName::$FullName"
+      env:
+        FName: ""
+        EName: ""
+        FullName: ""
 
 
       - name: 执行      	
