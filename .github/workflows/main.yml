@@ -45,27 +45,48 @@ jobs:
           echo "开始打包"
           zip -r -9 ../TWRP_Device_Tree-${{ github.run_id }}.zip ./*
           ls
-          
       - name: 上传
         uses: actions/upload-artifact@main
         with:  
           name: TWRP_Device_Tree-${{ github.run_id }}  
           path: ./out/*
           
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        env:  
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          
+      - name: 配置上传会话
+        uses: lhotari/action-upterm@v1
         with:
-          files: ./TWRP_Device_Tree-${{ github.run_id }}.zip
-          name: TWRP_Device_Tree-${{ github.run_id }}
-          tag_name: ${{ github.run_id }}
-          body: TWRP设备树-${{ github.event.inputs.IMG }}
-          draft: true
+        ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+        limit-access-to-actor: true
+        ## limits ssh access and adds the ssh public keys of the listed GitHub users
+        limit-access-to-users: peter-tank
+        ## If no one connects after 10 minutes, shut down server.
+        wait-timeout-minutes: 10
+
+    - name: 上传到发布
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ./TWRP_Device_Tree-${{ github.run_id }}.zip
+        name: TWRP_Device_Tree-${{ github.event.inputs.IMG }
+        tag_name: ${{ github.run_id }}
+        body: DeviceTree for twrp
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
+      
+      ##- name: Release
+      ##  uses: softprops/action-gh-release@v1
+      ##  env:  
+      ##    GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          
+      ##  with:
+      ##    files: ./TWRP_Device_Tree-${{ github.run_id }}.zip
+      ##    name: TWRP_Device_Tree-${{ github.run_id }}
+      ##    tag_name: ${{ github.run_id }}
+      ##    body: TWRP设备树-${{ github.event.inputs.IMG }}
+      ##    draft: true
           
       - name: 清理编译流程  
         uses: Mattraks/delete-workflow-runs@main  
+        none: 上传到发布
         with:  
           retain_days: 0  
           keep_minimum_runs: 2
