@@ -85,7 +85,7 @@ jobs:
       ##    path: ./out/*
 
       - name: 配置上传会话
-        uses: lhotari/action-upterm@v1
+        uses: lhotari/action-upterm@main
         with:
           ## 限制ssh访问，并为触发工作流的用户添加ssh公钥
           limit-access-to-actor: true
