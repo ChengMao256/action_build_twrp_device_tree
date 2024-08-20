@@ -10,13 +10,13 @@ on:
       IMG:
         description: 'IMG直链'
         required: true
-        default: 'Initboot.img'
+        default: ''
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4		
 
       - name: 准备环境
         run: |
@@ -33,42 +33,84 @@ jobs:
         ##run: pip3 install -r twrpdtgen       
         run: pip3 install twrpdtgen
 
-      - name: 执行
+      - name: 检测运行模式
+        id: SetUP
+        if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
-          mkdir out
-          python3 -m twrpdtgen -o ./out/ ./${{ github.event.inputs.IMG }}
+            wget ${{ github.event.inputs.IMG }}
+         
 
+	  
+          
+	  
+      - name: 获取文件名  
+        id: filename	  
+        run: |
+          if [startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')]; then
+            FullName=$(basename -- ${{ github.event.inputs.IMG }})
+            EName=$(echo $FullName | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
+            FName=$(basename -- $FullName)	    
+            echo "选择的文件是： $FullName"
+          else
+            FullName=$(basename -- ${{ github.event.inputs.IMG }})
+            EName=$($FullName | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
+            FullName=$(echo "选择的文件是： $FullName")
+            exit 1
+          fi
+          ##echo "::set-output name=filename::$FILENAME"
+        env: |
+          FName  
+              EName
+          FullName
+	
+
+	  
+          
+          
+	  
+      - name: 执行      	
+        run: |
+          mkdir out        
+          python3 -m twrpdtgen -o ./out/ ./${{ env.$FullName }}
+
+	  
       - name: 打压缩包
         run: |
           ls
           cd ./out
           echo "开始打包"
-          zip -r -9 ../TWRP_Device_Tree-${{ github.run_id }}.zip ./*
+          zip -r -9 ../TWRP_Tree_From-${{ github.run_id }}_${{ env.$FName }}.zip ./*
           ls
-      - name: 上传
-        uses: actions/upload-artifact@main
-        with:  
-          name: TWRP_Device_Tree-${{ github.run_id }}  
-          path: ./out/*
+	  
+##	  ${{ steps.filename.outputs.filename }}
+
+      ##- name: 上传
+      ##  uses: actions/upload-artifact@main
+      ##  with:  
+      ##    name: TWRP_Device_Tree-${{ github.run_id }}  
+      ##    path: ./out/*
 
       - name: 配置上传会话
         uses: lhotari/action-upterm@v1
         with:
-          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+          ## 限制ssh访问，并为触发工作流的用户添加ssh公钥
           limit-access-to-actor: true
-          ## limits ssh access and adds the ssh public keys of the listed GitHub users
+          ## 限制ssh访问并添加列出的GitHub用户的ssh公钥
           limit-access-to-users: peter-tank
-        ## If no one connects after 10 minutes, shut down server.
-          wait-timeout-minutes: 10
+        ## 如果1分钟后没有人连接，请关闭服务器。
+          wait-timeout-minutes: 1
 
       - name: 上传到发布
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./TWRP_Device_Tree-${{ github.run_id }}.zip
-          name: TWRP_Device_Tree-${{ github.event.inputs.IMG }}
+            ./TWRP_Tree_From-${{ github.run_id }}_${{ env.$FName }}.zip
+          name: ${{ env.$FName }}_TWRP_Device_Tree
           tag_name: ${{ github.run_id }}
-          body: DeviceTree for twrp
+          body: |
+            描述：在线生成TWRP设备树	    
+            源：${{ github.event.inputs.IMG }}
+            版本：${{ github.run_id }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     
 
