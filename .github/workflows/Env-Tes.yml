@@ -24,8 +24,7 @@ jobs:
         run: |
           RunMode="URL"
           echo "RunMode=${RunMode}" >> $GITHUB_ENV
-        env:
-          RunMode: ""
+          echo $GITHUB_ENV
 
       - name: 获取文件名
         id: GetFileName        
