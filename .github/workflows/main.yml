@@ -85,8 +85,7 @@ jobs:
       ##    draft: true
 
       - name: 清理编译流程  
-        uses: Mattraks/delete-workflow-runs@main  
-        needs: 上传到发布
+        uses: Mattraks/delete-workflow-runs@main
         with:  
           retain_days: 0  
           keep_minimum_runs: 2
