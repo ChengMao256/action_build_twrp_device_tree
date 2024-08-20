@@ -55,7 +55,7 @@ jobs:
 
       - name: 获取常规文件名
         id: filename
-        if: ! startsWith(${{ github.event.inputs.IMG }}, 'http') || ! startsWith(${{ github.event.inputs.IMG }}, 'https')
+        if: ${{ ! startsWith(${{ github.event.inputs.IMG }}, 'http') }} || ${{ ! startsWith(${{ github.event.inputs.IMG }}, 'https') }}
         run: |
           FullName="${{ github.event.inputs.IMG }}"
           FName=$(basename "${{ github.event.inputs.IMG }}")
