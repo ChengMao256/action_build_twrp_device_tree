@@ -47,18 +47,15 @@ jobs:
         id: Urlname
         if: startsWith(github.event.inputs.IMG, 'http') || startsWith(github.event.inputs.IMG, 'https') 
         run: |
-        
           FullName=$(basename "${{ github.event.inputs.IMG }}")
           EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
           FName=$(basename "$FullName")
           echo "选择的文件是： $FullName"
-          
-
 
 
       - name: 获取常规文件名
         id: filename
-        if: ${{ ! startsWith(github.event.inputs.IMG, "http") }} || ${{ ! startsWith(github.event.inputs.IMG, "https") }}
+        if: ! startsWith(${{ github.event.inputs.IMG }}, 'http') || ! startsWith(${{ github.event.inputs.IMG }}, 'https')
         run: |
           FullName="${{ github.event.inputs.IMG }}"
           FName=$(basename "${{ github.event.inputs.IMG }}")
