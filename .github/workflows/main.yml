@@ -30,8 +30,8 @@ jobs:
           cache: 'pip'
 
       - name: 准备TWRP生成器 
-        run: pip3 install -r twrpdtgen       
-
+        ##run: pip3 install -r twrpdtgen       
+        run: pip3 install twrpdtgen
 
       - name: 执行
         run: |
