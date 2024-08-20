@@ -1,0 +1,57 @@
+name: 环境变量_测试在其他步骤中获取变量
+
+on:
+  workflow_dispatch:
+    inputs:
+      IMG:
+        description: 'IMG直链'
+        required: true
+        default: ''
+env:
+  FName: ""
+  EName: ""
+  FullName: ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4		
+        
+      - name: 检测运行模式
+        id: SetUP
+        if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
+        run: |
+          RunMode="URL"
+          echo "RunMode=${RunMode}" >> $GITHUB_ENV
+        env:
+          RunMode: ""
+
+      - name: 获取文件名
+        id: GetFileName
+        run: |
+          Test="${{ github.event.input.RunMode }}"
+          if ${{ $Test ='URL' }}
+          then
+            FullName=$(basename "${{ github.event.inputs.IMG }}")
+            EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
+            FName=$(basename "$FullName")
+            echo "FullName=${FullName}" >> $GITHUB_ENV
+            echo "EName=${EName}" >> $GITHUB_ENV
+            echo "FName=${FName}" >> $GITHUB_ENV
+        env:
+          Test: ""
+          
+      - name: 显示文件名
+          run: |
+            S_FullName="${{ github.event.input.FullName }}"
+            S_FName="${{ github.event.input.FullName }}"
+            S_EName="${{ github.event.input.FullName }}"
+            echo "文件名是：$FName"
+            echo "扩展名是：$EName"
+            echo "文件全名是：$FullName"
+          env:
+            S_FullName: ""
+            S_FName: ""
+            S_EName: ""
+          
