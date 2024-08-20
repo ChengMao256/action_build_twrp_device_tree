@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: ${{ github.event.inputs.PY }}
           cache: 'pip'
-  
+
       - name: 准备TWRP生成器 
         run: pip3 install -r twrpdtgen       
 
@@ -66,7 +66,7 @@ jobs:
         with:
           files: |
             ./TWRP_Device_Tree-${{ github.run_id }}.zip
-          name: TWRP_Device_Tree-${{ github.event.inputs.IMG }
+          name: TWRP_Device_Tree-${{ github.event.inputs.IMG }}
           tag_name: ${{ github.run_id }}
           body: DeviceTree for twrp
         env:
@@ -86,7 +86,7 @@ jobs:
 
       - name: 清理编译流程  
         uses: Mattraks/delete-workflow-runs@main  
-        none: 上传到发布
+        needs: 上传到发布
         with:  
           retain_days: 0  
           keep_minimum_runs: 2
