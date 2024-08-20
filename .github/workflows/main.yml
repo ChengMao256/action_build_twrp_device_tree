@@ -38,11 +38,7 @@ jobs:
         if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
             wget ${{ github.event.inputs.IMG }}
-         
 
-	  
-          
-	  
       - name: 获取文件名  
         id: filename	  
         run: |
@@ -62,18 +58,14 @@ jobs:
           FName  
               EName
           FullName
-	
 
-	  
-          
-          
-	  
+
       - name: 执行      	
         run: |
           mkdir out        
           python3 -m twrpdtgen -o ./out/ ./${{ env.$FullName }}
 
-	  
+
       - name: 打压缩包
         run: |
           ls
@@ -81,7 +73,7 @@ jobs:
           echo "开始打包"
           zip -r -9 ../TWRP_Tree_From-${{ github.run_id }}_${{ env.$FName }}.zip ./*
           ls
-	  
+
 ##	  ${{ steps.filename.outputs.filename }}
 
       ##- name: 上传
