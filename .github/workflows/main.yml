@@ -112,7 +112,7 @@ jobs:
       EName: ${{ needs.CheckMode.outputs.EName }}
     steps:
       - name: 恢复环境
-        uses: actions/cache@vmain
+        uses: actions/cache@main
         with:
           path: |
             ${{ github.event.inputs.IMG }}
