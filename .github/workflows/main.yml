@@ -65,7 +65,7 @@ jobs:
             echo "FName=$FName" >> "$GITHUB_OUTPUT"
             echo "EName=$EName" >> "$GITHUB_OUTPUT"
             
-  initial-Pack:
+  initial_Pack:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
@@ -88,7 +88,7 @@ jobs:
 
 
   build:    
-    needs: [CheckMode]
+    needs: [CheckMode],[initial_Pack]
     runs-on: ubuntu-latest
     env: 
       FullName: ${{ needs.CheckMode.outputs.FullName }}
