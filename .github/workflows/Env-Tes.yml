@@ -47,10 +47,8 @@ jobs:
             echo "FName=${FullName%.*}" >> "$GITHUB_ENV"
             
       - name: 显示文件名
-        run: |
-          if true
+        run: |          
             echo "文件名是：$FName"
             echo "扩展名是：$EName"
-            echo "文件全名是：$FullName"
-          fi
+            echo "文件全名是：$FullName"    
           
