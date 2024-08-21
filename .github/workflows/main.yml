@@ -61,7 +61,7 @@ jobs:
           funmode: ${{ steps.setmode.outputs.mode }}        
         if:  ${{ ! env.funmode }}
         run: |
-            echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
+            echo "FullName=${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
 
       - name: 拆分文件名        
