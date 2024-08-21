@@ -81,7 +81,7 @@ jobs:
         
       - name: 准备环境         
         run: |
-          ls ~/.cache
+          
           sudo apt update
           sudo apt -y install cpio wget
           
@@ -93,7 +93,9 @@ jobs:
           
       - name: 准备TWRP生成器 
         ##run: pip3 install -r twrpdtgen       
-        run: pip3 install twrpdtgen
+        run: |
+          ls ~/
+          pip3 install twrpdtgen
         
       - name: 缓存文件          
         uses: actions/cache@main        
