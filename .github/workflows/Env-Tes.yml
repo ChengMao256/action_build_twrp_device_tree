@@ -26,11 +26,12 @@ jobs:
 
       - name: 获取文件名
         env:
-          mode: ${{ steps.setup.outputs.mode }}
+          funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename        
         run: | 
           printf '%s\n' "$RunMode"
-          if startsWith( $RunMode,'URL' )
+          printf '%s\n' "$funmode"
+          if startsWith( '$RunMode','URL' )
           then
             echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
           else
