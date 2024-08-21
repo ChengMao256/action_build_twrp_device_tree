@@ -19,25 +19,15 @@ jobs:
       - name: Check Out
         uses: actions/checkout@v4		
         
-      - name: 检测URL运行模式:STEP1
-        id: setup1
+      - name: 检测运行模式
+        id: setup
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
         run: |
           echo "${{ github.event.inputs.IMG }}"
           echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
           echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
           echo "RunMode=URLDown" >> $GITHUB_ENV
-          echo "mode=True" >> "$GITHUB_OUTPUT" 
-          
-      - name: 检测URL运行模式:STEP2
-        id: setup2
-        if: ${{ startsWith( github.event.inputs.IMG , 'https') }}         
-        run: |
-          echo "${{ github.event.inputs.IMG }}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
-          echo "RunMode=URLDown" >> $GITHUB_ENV
-          echo "mode=True" >> "$GITHUB_OUTPUT" 
+          echo "mode=True" >> "$GITHUB_OUTPUT"          
           
       - name: 从URL获取文件
         env:
@@ -100,8 +90,12 @@ jobs:
   build:    
     needs: [CheckMode]
     runs-on: ubuntu-latest
+    env: 
+      FullName: ${{ steps.vfilename.outputs.FullName }}
+      FName: ${{ steps.vfilename.outputs.FName }}
+      EName: ${{ steps.vfilename.outputs.EName }}
     steps:
-      - name: 执行      	
+      - name: 执行         
         run: |
           mkdir out        
           python3 -m twrpdtgen -o ./out/ ./${{ env.$FullName }}
