@@ -7,11 +7,7 @@ on:
         description: 'IMG直链'
         required: true
         default: ''
-##env:
-##  FName: ""
-##  EName: ""
-##  FullName: ""
-##  RunMode: ""
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,39 +16,38 @@ jobs:
         uses: actions/checkout@v4		
         
       - name: 检测运行模式
-        id: SetUP
+        id: setup
         if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
           RunMode="URL"
           echo "RunMode=URL" >> $GITHUB_ENV
+          echo "mode=True" >> "$GITHUB_OUTPUT" 
           ls
 
       - name: 获取文件名
-        id: GetFileName        
+        env:
+          mode: ${{ steps.setup.outputs.mode }}
+        id: getfilename        
         run: | 
           printf '%s\n' "$RunMode"
           if startsWith( $RunMode,'URL' )
           then
             echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
+          else
+            echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: 拆分文件名
+        id: splitname
+        run: |
             echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
             echo "FName=$(basename $FullName)" >> "$GITHUB_ENV"
-            ##echo "FullName=${FullName}" >> $GITHUB_ENV
-            ##echo "EName=${EName}" >> $GITHUB_ENV
-            ##echo "FName=${FName}" >> $GITHUB_ENV
-        ##env:
-         ## Test: ""
-          
+            
       - name: 显示文件名
         run: |
           if true
-            S_FullName="${{ github.event.input.FullName }}"
-            S_FName="${{ github.event.input.FName }}"
-            S_EName="${{ github.event.input.EName }}"
             echo "文件名是：$S_FName"
             echo "扩展名是：$S_EName"
             echo "文件全名是：$S_FullName"
-          env:
-            S_FullName: ""
-            S_FName: ""
-            S_EName: ""
+          
           
