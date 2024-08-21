@@ -15,25 +15,31 @@ on:
 jobs:
   CheckMode:
     runs-on: ubuntu-latest
+    outputs:
+          FullName: ${{ steps.vfilename.outputs.FullName }}
+          FName: ${{ steps.vfilename.outputs.FName }}
+          EName: ${{ steps.vfilename.outputs.EName }}
+          mode: ${{ steps.setmode.outputs.mode }}
+    
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
         
       - name: 检测运行模式
-        id: setup
+        id: setmode
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
         run: |
           ls
           #echo "${{ github.event.inputs.IMG }}"
           #echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
           #echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
-          echo "RunMode=URLDown" >> $GITHUB_ENV
-          echo "mode=True" >> "$GITHUB_OUTPUT"          
+          
+          echo "mode=True" >> "$GITHUB_OUTPUT"
+          
           
       - name: 从URL获取文件
         env:
-          funmode: ${{ steps.setup.outputs.mode }}
-        id: getfilename_url        
+          funmode: ${{ steps.setmode.outputs.mode }}
         if: ${{ env.funmode }}
         run: |
           echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
@@ -64,6 +70,7 @@ jobs:
             
       - name: 显示文件名
         id: vfilename
+        
         run: |
             echo "文件名是：$FName"
             echo "扩展名是：$EName"
@@ -72,8 +79,11 @@ jobs:
             echo "FName=$FName" >> "$GITHUB_OUTPUT"
             echo "EName=$EName" >> "$GITHUB_OUTPUT"
             
+        
+          
+          
   initial_Pack:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest              
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
@@ -104,15 +114,16 @@ jobs:
             /var/cache/apt
             ~/.cache/pip
           key: |  
-            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-            ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
             
       
 
 
   build:
     runs-on: ubuntu-latest
-    needs: [CheckMode, initial_Pack]    
+    needs: [CheckMode, initial_Pack] 
+    
     env: 
       FullName: ${{ needs.CheckMode.outputs.FullName }}
       FName: ${{ needs.CheckMode.outputs.FName }}
