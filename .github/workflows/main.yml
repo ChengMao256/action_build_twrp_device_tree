@@ -35,11 +35,13 @@ jobs:
         id: setmode
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}
         run: |
-          echo "mode=true" >> "$GITHUB_OUTPUT"nmio
+          echo "mode=true" >> "$GITHUB_OUTPUT"
+          
           FullName=$(basename "${{ github.event.inputs.IMG }}")
             echo "FullName=${FullName}" >> "$GITHUB_ENV"
+            echo "env.FullName"
           wget ${{ github.event.inputs.IMG }}
-          echo "mode=true" >> "$GITHUB_OUTPUT"
+          
           
       #- name: 缓存_URL文件
       #  if: ${{ env.funmode }}
@@ -56,7 +58,7 @@ jobs:
           
       - name: 常规方式获取文件
         env:
-          funmode: ${{ steps.setup.outputs.mode }}        
+          funmode: ${{ steps.setmode.outputs.mode }}        
         if:  ${{ ! env.funmode }}
         run: |
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
