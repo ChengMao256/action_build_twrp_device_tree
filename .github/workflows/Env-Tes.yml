@@ -26,15 +26,15 @@ jobs:
       - name: 获取文件名
         env:
           funmode: ${{ steps.setup.outputs.mode }}
-        id: getfilename        
+        id: getfilename 
+        
+        if: success() && env.funmode
         run: | 
-          ##printf '%s\n' "$RunMode"
-          printf '%s\n' "Mode is $funmode"
-          if $funmode==True then
             echo "FullName= basename ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
-          else
+        if: success() && !env.funmode
+        run: |          
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
-          fi
+        
 
       - name: 拆分文件名
         id: splitname
