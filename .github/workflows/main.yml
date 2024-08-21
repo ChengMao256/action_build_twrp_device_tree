@@ -24,53 +24,50 @@ jobs:
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
-        
+
+      - name: 准备环境         
+        run: |          
+          sudo apt update
+          sudo apt -y install cpio wget
+          ls
+          
       - name: 检测运行模式
         id: setmode
-        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
+        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}
         run: |
-          ls
-          #echo "${{ github.event.inputs.IMG }}"
-          #echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
-          #echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
-          
           echo "mode=True" >> "$GITHUB_OUTPUT"
-          
-          
-      - name: 从URL获取文件
-        env:
-          funmode: ${{ steps.setmode.outputs.mode }}
-        if: ${{ env.funmode }}
-        run: |
           echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
-          ls
           
-      - name: 缓存URL文件
+          
+      - name: 缓存_URL文件
         if: ${{ env.funmode }}
         uses: actions/cache@main
         with:
           path: ./${{ github.event.inputs.IMG }}
-          key: download-cache-${{ hashFiles(github.event.inputs.IMG) }}
+          key: download-cache-${{ github.event.inputs.IMG }}
+          
+      - name: 缓存_软件包        
+        uses: actions/cache@main
+        with:
+          path: /var/cache/apt
+          key: apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
           
       - name: 常规方式获取文件
         env:
-          funmode: ${{ steps.setup.outputs.mode }}
-        id: getfilename_normal
+          funmode: ${{ steps.setup.outputs.mode }}        
         if:  ${{ !env.funmode }}
         run: |
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
 
-      - name: 拆分文件名
-        id: splitname
+      - name: 拆分文件名        
         run: |
             echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
             echo "FName=${FullName%.*}" >> "$GITHUB_ENV"
             
       - name: 显示文件名
-        id: vfilename
-        
+        id: vfilename        
         run: |
             echo "文件名是：$FName"
             echo "扩展名是：$EName"
@@ -86,15 +83,8 @@ jobs:
     runs-on: ubuntu-latest              
     steps:
       - name: Check Out
-        uses: actions/checkout@v4		
-        
-        
-      - name: 准备环境         
-        run: |
-          
-          sudo apt update
-          sudo apt -y install cpio wget
-          
+        uses: actions/checkout@v4
+              
       - name: 准备Python3
         uses: actions/setup-python@v5
         with:
@@ -110,11 +100,9 @@ jobs:
       - name: 缓存文件          
         uses: actions/cache@main        
         with:
-          path: |
-            /var/cache/apt
+          path: |            
             ~/.cache/pip
-          key: |  
-            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+          key: |              
             ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
             
       
@@ -134,20 +122,25 @@ jobs:
         with:
           path: |            
             /var/cache/apt
+            ~/.cache/pip
           key: |            
-            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
           restore-keys: | 
-            download-cache-${{ hashFiles(github.event.inputs.IMG) }}
-            download-cache-
-            apt-cache-${{ runner.os }}-bulid-
+            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
+            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
             apt-cache-${{ runner.os }}-
+            download-cache-${{ github.event.inputs.IMG }}
+            download-cache
+            apt-cache-${{ runner.os }}-bulid-
+            apt-cache-${{ runner.os }}
             
-      - name: 缓存URL文件
+      - name: 恢复URL文件
         if: ${{ needs.setup.outputs.mode }}
         uses: actions/cache@main
         with:
           path: ./${{ github.event.inputs.IMG }}
-          key: download-cache-${{ hashFiles(github.event.inputs.IMG) }} 
+          key: download-cache-${{ github.event.inputs.IMG }} 
           
       - name: 执行         
         run: |
