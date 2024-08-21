@@ -88,7 +88,7 @@ jobs:
 
 
   build:    
-    needs: [CheckMode],[initial_Pack]
+    needs: [CheckMode, initial_Pack]
     runs-on: ubuntu-latest
     env: 
       FullName: ${{ needs.CheckMode.outputs.FullName }}
@@ -98,7 +98,7 @@ jobs:
       - name: 执行         
         run: |
           mkdir out        
-          python3 -m twrpdtgen -o ./out/ ./env.$FullName 
+          python3 -m twrpdtgen -o ./out/ ./${{ env.FullName }} 
 
 
       - name: 打压缩包
@@ -106,7 +106,7 @@ jobs:
           ls
           cd ./out
           echo "开始打包"
-          zip -r -9 ../TWRP_Tree_From-${{ github.run_id }}_${{ env.$FName }}.zip ./*
+          zip -r -9 ../TWRP_Tree_From-${{ github.run_id }}_${{ env.FName }}.zip ./*
           ls
 
 ##	  ${{ steps.filename.outputs.filename }}
@@ -131,7 +131,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./TWRP_Tree_From-${{ github.run_id }}_${{ env.$FName }}.zip
+            ./TWRP_Tree_From-${{ github.run_id }}_${{ env.FName }}.zip
           name: ${{ env.$FName }}_TWRP_Device_Tree
           tag_name: ${{ github.run_id }}
           body: |
