@@ -31,7 +31,7 @@ jobs:
         run: | 
           printf '%s\n' "$RunMode"
           printf '%s\n' "$funmode"
-          if startsWith( '$RunMode','URL' )
+          if startsWith( ${{ RunMode }},'URL' )
           then
             echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
           else
