@@ -39,7 +39,7 @@ jobs:
           FullName=$(basename "${{ github.event.inputs.IMG }}")
             echo "FullName=${FullName}" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
-          
+          echo "mode=true" >> "$GITHUB_OUTPUT"
           
       #- name: 缓存_URL文件
       #  if: ${{ env.funmode }}
