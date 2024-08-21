@@ -13,7 +13,7 @@ on:
         default: ''
 
 jobs:
-  CheckMode:
+  Bulid:
     runs-on: ubuntu-latest
     outputs:
           FullName: ${{ steps.vfilename.outputs.FullName }}
@@ -100,13 +100,7 @@ jobs:
           ls ~/
           pip3 install twrpdtgen
         
-      - name: 缓存文件          
-        uses: actions/cache@main        
-        with:
-          path: |            
-            ~/.cache/pip
-          key: |              
-            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
+
             
       
 
@@ -176,8 +170,8 @@ jobs:
           limit-access-to-actor: true
           ## 限制ssh访问并添加列出的GitHub用户的ssh公钥
           limit-access-to-users: peter-tank
-        ## 如果1分钟后没有人连接，请关闭服务器。
-          wait-timeout-minutes: 1
+        ## 如果5分钟后没有人连接，请关闭服务器。
+          #wait-timeout-minutes: 5
 
       - name: 上传到发布
         uses: softprops/action-gh-release@v2
