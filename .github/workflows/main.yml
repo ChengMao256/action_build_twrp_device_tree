@@ -39,6 +39,13 @@ jobs:
             echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
             wget ${{ github.event.inputs.IMG }}
             
+      - name: 缓存URL文件
+        if: ${{ env.funmode }}
+        uses: actions/cache@main
+        with:
+          path: ${{ github.event.inputs.IMG }}
+          key: download-cache-${{ hashfiles(github.event.inputs.IMG) }}
+          
       - name: 常规方式获取文件
         env:
           funmode: ${{ steps.setup.outputs.mode }}
@@ -65,25 +72,40 @@ jobs:
             echo "FName=$FName" >> "$GITHUB_OUTPUT"
             echo "EName=$EName" >> "$GITHUB_OUTPUT"
             
-  initial_Pack:    
+  initial_Pack:
+    runs-on: ubuntu-latest
+    needs: CheckMode
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
-
-      - name: 准备环境
+      
+      - name: 准备环境         
         run: |
           sudo apt update
           sudo apt -y install cpio wget
-
+          
       - name: 准备Python3
         uses: actions/setup-python@v5
         with:
           python-version: ${{ github.event.inputs.PY }}
           cache: 'pip'
-
+          
       - name: 准备TWRP生成器 
         ##run: pip3 install -r twrpdtgen       
         run: pip3 install twrpdtgen
+        
+      - name: 缓存文件          
+        uses: actions/cache@main        
+        with:
+          path: |
+            ${{ github.event.inputs.IMG }}
+            /var/cache/apt
+          key: |
+            download-cache-${{ hashfiles(github.event.inputs.IMG) }}         
+            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+          
+      
 
 
   build:    
@@ -93,6 +115,16 @@ jobs:
       FName: ${{ needs.CheckMode.outputs.FName }}
       EName: ${{ needs.CheckMode.outputs.EName }}
     steps:
+      - name: 恢复环境
+        uses: actions/cache@vmain
+        with:
+          path: |
+            ${{ github.event.inputs.IMG }}
+            /var/cache/apt
+          key: |
+            download-cache-${{ hashfiles(github.event.inputs.IMG) }}
+            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+            
       - name: 执行         
         run: |
           mkdir out        
