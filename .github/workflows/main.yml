@@ -102,7 +102,7 @@ jobs:
             /var/cache/apt
             ~/.cache/pip
           key: |                    
-            apt-cache-${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
             ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
             ls ~/.cache/
       
@@ -119,12 +119,10 @@ jobs:
       - name: 恢复环境
         uses: actions/cache@main
         with:
-          path: |
-            ./${{ github.event.inputs.IMG }}
+          path: |            
             /var/cache/apt
-          key: |
-            download-cache-${{ hashFiles(github.event.inputs.IMG) }}
-            apt-cache-${{ runner.os }-bulid-${{ hashFiles('**/package-lock.json') }}
+          key: |            
+            apt-cache-${{ runner.os }-${{ hashFiles('**/package-lock.json') }}
           restore-keys: | 
             download-cache-${{ hashFiles(github.event.inputs.IMG) }}
             download-cache-
