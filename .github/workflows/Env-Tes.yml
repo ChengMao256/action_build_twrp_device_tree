@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "${{ github.event.inputs.IMG }}"
           echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
-          echo "${{tartsWith( github.event.inputs.IMG , 'https')}}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           
