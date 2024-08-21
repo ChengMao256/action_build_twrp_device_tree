@@ -35,28 +35,28 @@ jobs:
         id: setmode
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}
         run: |
-          echo "mode=True" >> "$GITHUB_OUTPUT"
-          echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
+          echo "mode=true" >> "$GITHUB_OUTPUT"
+          echo "FullName= ${{ basename github.event.inputs.IMG }}" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
           
           
-      - name: 缓存_URL文件
-        if: ${{ env.funmode }}
-        uses: actions/cache@main
-        with:
-          path: ./${{ github.event.inputs.IMG }}
-          key: download-cache-${{ github.event.inputs.IMG }}
+      #- name: 缓存_URL文件
+      #  if: ${{ env.funmode }}
+      #  uses: actions/cache@main
+      #  with:
+      #    path: ./${{ github.event.inputs.IMG }}
+      #    key: download-cache-${{ github.event.inputs.IMG }}
           
-      - name: 缓存_软件包        
-        uses: actions/cache@main
-        with:
-          path: /var/cache/apt
-          key: apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+      #- name: 缓存_软件包        
+      #  uses: actions/cache@main
+      #  with:
+      #    path: /var/cache/apt
+      #    key: apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
           
       - name: 常规方式获取文件
         env:
           funmode: ${{ steps.setup.outputs.mode }}        
-        if:  ${{ !env.funmode }}
+        if:  ${{ ! env.funmode }}
         run: |
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
