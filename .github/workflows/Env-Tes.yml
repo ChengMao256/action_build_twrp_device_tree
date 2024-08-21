@@ -44,7 +44,7 @@ jobs:
         id: splitname
         run: |
             echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
-            echo "FName=$(basename "$FullName")" >> "$GITHUB_ENV"
+            echo "FName=${$FullName%.*}" >> "$GITHUB_ENV"
             
       - name: 显示文件名
         run: |
