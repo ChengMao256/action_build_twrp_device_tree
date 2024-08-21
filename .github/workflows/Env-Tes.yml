@@ -28,9 +28,9 @@ jobs:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename        
         run: | 
-          printf '%s\n' "$RunMode"
+          ##printf '%s\n' "$RunMode"
           printf '%s\n' "$funmode"
-          if startsWith( ${{ $RunMode }},'URL' )
+          if startsWith( echo "$RunMode",'URL' )
           then
             echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
           else
