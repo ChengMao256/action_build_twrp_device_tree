@@ -132,7 +132,7 @@ jobs:
         with:
           files: |
             ./TWRP_Tree_From-${{ github.run_id }}_${{ env.FName }}.zip
-          name: ${{ env.$FName }}_TWRP_Device_Tree
+          name: ${{ env.FName }}_TWRP_Device_Tree
           tag_name: ${{ github.run_id }}
           body: |
             描述：在线生成TWRP设备树	    
