@@ -35,7 +35,7 @@ jobs:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_url        
         if: ${{ env.funmode }}
-        run: |        
+        run: |
           echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
           ls
@@ -52,7 +52,7 @@ jobs:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_normal
         if:  ${{ !env.funmode }}
-        run: |            
+        run: |
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
 
@@ -64,7 +64,7 @@ jobs:
             
       - name: 显示文件名
         id: vfilename
-        run: |          
+        run: |
             echo "文件名是：$FName"
             echo "扩展名是：$EName"
             echo "文件全名是：$FullName"
@@ -98,13 +98,13 @@ jobs:
       - name: 缓存文件          
         uses: actions/cache@main        
         with:
-          path: |            
+          path: |
             /var/cache/apt
             ~/.cache/pip
-          key: |                    
+          key: |  
             apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
             ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-            ls ~/.cache/
+            
       
 
 
