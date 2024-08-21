@@ -30,16 +30,18 @@ jobs:
         env:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_url        
-        if: success() && env.funmode
+        if: ${{ env.funmode }}
         run: | 
+            echo "${{ env.funmode }}"
             echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
             
       - name: 常规方式获取文件名
         env:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_normal
-        if: success() && !env.funmode
-        run: |          
+        if:  ${{ !env.funmode }}
+        run: |
+            echo "${{ env.funmode }}"
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
 
