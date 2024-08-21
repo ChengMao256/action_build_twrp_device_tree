@@ -11,12 +11,71 @@ on:
         description: 'IMG直链'
         required: true
         default: ''
-env:
-  FName: ""
-  EName: ""
-  FullName: ""
+
 jobs:
-  build:
+  CheckMode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v4		
+        
+      - name: 检测URL运行模式:STEP1
+        id: setup1
+        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
+        run: |
+          echo "${{ github.event.inputs.IMG }}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
+          echo "RunMode=URLDown" >> $GITHUB_ENV
+          echo "mode=True" >> "$GITHUB_OUTPUT" 
+          
+      - name: 检测URL运行模式:STEP2
+        id: setup2
+        if: ${{ startsWith( github.event.inputs.IMG , 'https') }}         
+        run: |
+          echo "${{ github.event.inputs.IMG }}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
+          echo "RunMode=URLDown" >> $GITHUB_ENV
+          echo "mode=True" >> "$GITHUB_OUTPUT" 
+          
+      - name: 从URL获取文件
+        env:
+          funmode: ${{ steps.setup.outputs.mode }}
+        id: getfilename_url        
+        if: ${{ env.funmode }}
+        run: | 
+            echo "${{ env.funmode }}"
+            echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
+            wget ${{ github.event.inputs.IMG }}
+            
+      - name: 常规方式获取文件
+        env:
+          funmode: ${{ steps.setup.outputs.mode }}
+        id: getfilename_normal
+        if:  ${{ !env.funmode }}
+        run: |
+            echo "${{ env.funmode }}"
+            echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
+        
+
+      - name: 拆分文件名
+        id: splitname
+        run: |
+            echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
+            echo "FName=${FullName%.*}" >> "$GITHUB_ENV"
+            
+      - name: 显示文件名
+        id: vfilename
+        run: |          
+            echo "文件名是：$FName"
+            echo "扩展名是：$EName"
+            echo "文件全名是：$FullName"
+            echo "FullName=$FullName" >> "$GITHUB_OUTPUT"
+            echo "FName=$FName" >> "$GITHUB_OUTPUT"
+            echo "EName=$EName" >> "$GITHUB_OUTPUT"
+            
+  initial-Pack:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out
@@ -37,34 +96,11 @@ jobs:
         ##run: pip3 install -r twrpdtgen       
         run: pip3 install twrpdtgen
 
-      - name: 检测运行模式
-        id: SetUP
-        if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
-        run: |
-            wget ${{ github.event.inputs.IMG }}
 
-      - name: 获取URL文件名
-        id: Urlname
-        if: startsWith(github.event.inputs.IMG, 'http') || startsWith(github.event.inputs.IMG, 'https') 
-        run: |
-          FullName=$(basename "${{ github.event.inputs.IMG }}")
-          EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
-          FName=$(basename "$FullName")
-          echo "选择的文件是： $FullName"
-
-
-      - name: 获取常规文件名
-        id: filename
-        if: ${{ ! startsWith(${{ github.event.inputs.IMG }}, 'http') }} || ${{ ! startsWith(${{ github.event.inputs.IMG }}, 'https') }}
-        run: |
-          FullName="${{ github.event.inputs.IMG }}"
-          FName=$(basename "${{ github.event.inputs.IMG }}")
-          EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
-          echo "选择的文件是： $FullName"
-          exit 1
-
-
-
+  build:    
+    needs: [CheckMode]
+    runs-on: ubuntu-latest
+    steps:
       - name: 执行      	
         run: |
           mkdir out        
