@@ -122,13 +122,20 @@ jobs:
           path: |            
             /var/cache/apt
           key: |            
-            apt-cache-${{ runner.os }-${{ hashFiles('**/package-lock.json') }}
+            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: | 
             download-cache-${{ hashFiles(github.event.inputs.IMG) }}
             download-cache-
             apt-cache-${{ runner.os }}-bulid-
             apt-cache-${{ runner.os }}-
             
+      - name: 缓存URL文件
+        if: ${{ needs.setup.outputs.mode }}
+        uses: actions/cache@main
+        with:
+          path: ./${{ github.event.inputs.IMG }}
+          key: download-cache-${{ hashFiles(github.event.inputs.IMG) }} 
+          
       - name: 执行         
         run: |
           ls
