@@ -17,7 +17,7 @@ jobs:
         
       - name: 检测运行模式
         id: setup
-        if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
+        if: ${{ startsWith(${{ github.event.inputs.IMG }}, 'http') }} = ture || ${{ startsWith(${{ github.event.inputs.IMG }}, 'https') }} = true     
         run: |
           echo "${{ github.event.inputs.IMG }}"
           echo "startsWith(${{ github.event.inputs.IMG }}, 'http')"
