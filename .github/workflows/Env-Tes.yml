@@ -20,11 +20,11 @@ jobs:
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }} = ture || ${{ startsWith( github.event.inputs.IMG , 'https') }} = true     
         run: |
           echo "${{ github.event.inputs.IMG }}"
-          echo "startsWith(${{ github.event.inputs.IMG }}, 'http')"
-          echo "tartsWith(${{ github.event.inputs.IMG }}, 'https')"
+          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+          echo "${{tartsWith( github.event.inputs.IMG , 'https')}}"
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
-          ls
+          
 
       - name: 从URL获取文件名
         env:
