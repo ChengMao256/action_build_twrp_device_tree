@@ -143,7 +143,7 @@ jobs:
         run: |
           ls
           mkdir out 
-          echo "${{ needs.CheckMode.outputs.FullName }}"
+          echo "FullName is ${{ needs.Bulid.outputs.FullName }}"
           python3 -m twrpdtgen -o ./out/ ./${{ env.FullName }} 
 
 
