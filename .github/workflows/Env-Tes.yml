@@ -15,9 +15,9 @@ jobs:
       - name: Check Out
         uses: actions/checkout@v4		
         
-      - name: 检测运行模式
-        id: setup
-        if: ${{ startsWith( github.event.inputs.IMG , 'http') }} = ture || ${{ startsWith( github.event.inputs.IMG , 'https') }} = true     
+      - name: 检测运行模式1
+        id: setup1
+        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
         run: |
           echo "${{ github.event.inputs.IMG }}"
           echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
@@ -25,7 +25,16 @@ jobs:
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           
-
+      - name: 检测运行模式2
+        id: setup2
+        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
+        run: |
+          echo "${{ github.event.inputs.IMG }}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
+          echo "RunMode=URLDown" >> $GITHUB_ENV
+          echo "mode=True" >> "$GITHUB_OUTPUT" 
+          
       - name: 从URL获取文件名
         env:
           funmode: ${{ steps.setup.outputs.mode }}
