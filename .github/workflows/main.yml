@@ -23,9 +23,9 @@ jobs:
         id: setup
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
         run: |
-          echo "${{ github.event.inputs.IMG }}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
+          #echo "${{ github.event.inputs.IMG }}"
+          #echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+          #echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT"          
           
@@ -34,25 +34,23 @@ jobs:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_url        
         if: ${{ env.funmode }}
-        run: | 
-            echo "${{ env.funmode }}"
-            echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
-            wget ${{ github.event.inputs.IMG }}
+        run: |        
+          echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
+          wget ${{ github.event.inputs.IMG }}
             
       - name: 缓存URL文件
         if: ${{ env.funmode }}
         uses: actions/cache@main
         with:
           path: ${{ github.event.inputs.IMG }}
-          key: download-cache-${{ hashfiles(github.event.inputs.IMG) }}
+          key: download-cache-${{ hashFiles(github.event.inputs.IMG) }}
           
       - name: 常规方式获取文件
         env:
           funmode: ${{ steps.setup.outputs.mode }}
         id: getfilename_normal
         if:  ${{ !env.funmode }}
-        run: |
-            echo "${{ env.funmode }}"
+        run: |            
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
         
 
@@ -101,7 +99,7 @@ jobs:
             ${{ github.event.inputs.IMG }}
             /var/cache/apt
           key: |
-            download-cache-${{ hashfiles(github.event.inputs.IMG) }}         
+            download-cache-${{ hashFiles(github.event.inputs.IMG) }}         
             apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
           
@@ -122,7 +120,7 @@ jobs:
             ${{ github.event.inputs.IMG }}
             /var/cache/apt
           key: |
-            download-cache-${{ hashfiles(github.event.inputs.IMG) }}
+            download-cache-${{ hashFiles(github.event.inputs.IMG) }}
             apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
             
       - name: 执行         
@@ -138,7 +136,7 @@ jobs:
           echo "开始打包"
           zip -r -9 ../TWRP_Tree_From-${{ github.run_id }}_${{ env.FName }}.zip ./*
           ls
-
+          cd ..
 ##	  ${{ steps.filename.outputs.filename }}
 
       ##- name: 上传
