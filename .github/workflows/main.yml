@@ -91,9 +91,9 @@ jobs:
     needs: [CheckMode]
     runs-on: ubuntu-latest
     env: 
-      FullName: ${{ CheckMode.steps.vfilename.outputs.FullName }}
-      FName: ${{ CheckMode.steps.vfilename.outputs.FName }}
-      EName: ${{ CheckMode.steps.vfilename.outputs.EName }}
+      FullName: ${{ needs.CheckMode.outputs.FullName }}
+      FName: ${{ needs.CheckMode.outputs.FName }}
+      EName: ${{ needs.CheckMode.outputs.EName }}
     steps:
       - name: 执行         
         run: |
