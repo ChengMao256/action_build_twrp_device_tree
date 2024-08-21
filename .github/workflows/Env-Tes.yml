@@ -25,15 +25,15 @@ jobs:
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           
-      - name: 检测运行模式2
-        id: setup2
-        if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
-        run: |
-          echo "${{ github.event.inputs.IMG }}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
-          echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
-          echo "RunMode=URLDown" >> $GITHUB_ENV
-          echo "mode=True" >> "$GITHUB_OUTPUT" 
+      ##- name: 检测运行模式2
+      ##  id: setup2
+      ##  if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
+      ##  run: |
+      ##    echo "${{ github.event.inputs.IMG }}"
+      ##    echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
+      ##    echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
+      ##    echo "RunMode=URLDown" >> $GITHUB_ENV
+      ##    echo "mode=True" >> "$GITHUB_OUTPUT" 
           
       - name: 从URL获取文件名
         env:
