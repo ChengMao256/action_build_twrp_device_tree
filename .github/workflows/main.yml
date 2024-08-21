@@ -23,6 +23,7 @@ jobs:
         id: setup
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}         
         run: |
+          ls
           #echo "${{ github.event.inputs.IMG }}"
           #echo "${{ startsWith( github.event.inputs.IMG , 'http')}}"
           #echo "${{ startsWith( github.event.inputs.IMG , 'https')}}"
@@ -37,12 +38,13 @@ jobs:
         run: |        
           echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
-            
+          ls
+          
       - name: 缓存URL文件
         if: ${{ env.funmode }}
         uses: actions/cache@main
         with:
-          path: ${{ github.event.inputs.IMG }}
+          path: ./${{ github.event.inputs.IMG }}
           key: download-cache-${{ hashFiles(github.event.inputs.IMG) }}
           
       - name: 常规方式获取文件
@@ -75,7 +77,8 @@ jobs:
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
-      
+        run: ls
+        
       - name: 准备环境         
         run: |
           sudo apt update
@@ -96,10 +99,11 @@ jobs:
         with:
           path: |            
             /var/cache/apt
+            ~/.cache/pip
           key: |                    
-            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-
-          
+            apt-cache-${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+            ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          ls ~/.cache/
       
 
 
@@ -115,15 +119,22 @@ jobs:
         uses: actions/cache@main
         with:
           path: |
-            ${{ github.event.inputs.IMG }}
+            ./${{ github.event.inputs.IMG }}
             /var/cache/apt
           key: |
             download-cache-${{ hashFiles(github.event.inputs.IMG) }}
-            apt-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+            apt-cache-${{ runner.os }-bulid-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: | 
+            download-cache-${{ hashFiles(github.event.inputs.IMG) }}
+            download-cache-
+            apt-cache-${{ runner.os }}-bulid-
+            apt-cache-${{ runner.os }}-
             
       - name: 执行         
         run: |
-          mkdir out        
+          ls
+          mkdir out 
+          echo "${{ needs.CheckMode.outputs.FullName }}"
           python3 -m twrpdtgen -o ./out/ ./${{ env.FullName }} 
 
 
