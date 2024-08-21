@@ -19,7 +19,7 @@ jobs:
         id: setup
         if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
-          echo "RunMode=URL" >> $GITHUB_ENV
+          echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           ls
 
@@ -30,7 +30,7 @@ jobs:
         run: | 
           ##printf '%s\n' "$RunMode"
           printf '%s\n' "Mode is $funmode"
-          if startsWith( ${{ env.RunMode }},'URL' )
+          if startsWith( '${{ env.RunMode }}','URL' )
           then
             echo "FullName= basename ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
           else
