@@ -163,15 +163,15 @@ jobs:
       ##    name: TWRP_Device_Tree-${{ github.run_id }}  
       ##    path: ./out/*
 
-      - name: 配置上传会话
-        uses: lhotari/action-upterm@main
-        with:
-          ## 限制ssh访问，并为触发工作流的用户添加ssh公钥
-          limit-access-to-actor: true
-          ## 限制ssh访问并添加列出的GitHub用户的ssh公钥
-          limit-access-to-users: peter-tank
-        ## 如果5分钟后没有人连接，请关闭服务器。
-          #wait-timeout-minutes: 5
+      #- name: 配置上传会话
+       # uses: lhotari/action-upterm@main
+       # with:
+       #   ## 限制ssh访问，并为触发工作流的用户添加ssh公钥
+       #   limit-access-to-actor: true
+       #   ## 限制ssh访问并添加列出的GitHub用户的ssh公钥
+       #   limit-access-to-users: peter-tank
+       #  ## 如果5分钟后没有人连接，请关闭服务器。
+       #   wait-timeout-minutes: 1
 
       - name: 上传到发布
         uses: softprops/action-gh-release@v2
