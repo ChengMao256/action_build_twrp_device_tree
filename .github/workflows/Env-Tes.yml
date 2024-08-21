@@ -23,14 +23,18 @@ jobs:
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           ls
 
-      - name: 获取文件名
+      - name: 从URL获取文件名
         env:
           funmode: ${{ steps.setup.outputs.mode }}
-        id: getfilename 
-        
+        id: getfilename_url        
         if: success() && env.funmode
         run: | 
             echo "FullName= basename ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
+            
+      - name: 常规方式获取文件名
+        env:
+          funmode: ${{ steps.setup.outputs.mode }}
+        id: getfilename_normal
         if: success() && !env.funmode
         run: |          
             echo "FullName= ${{ github.event.inputs.IMG }}" >> "$GITHUB_ENV"
