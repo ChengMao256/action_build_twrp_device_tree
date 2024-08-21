@@ -7,11 +7,11 @@ on:
         description: 'IMG直链'
         required: true
         default: ''
-env:
-  FName: ""
-  EName: ""
-  FullName: ""
-  RunMode: ""
+##env:
+##  FName: ""
+##  EName: ""
+##  FullName: ""
+##  RunMode: ""
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,23 +24,23 @@ jobs:
         if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
           RunMode="URL"
-          echo "RunMode=${RunMode}" >> $GITHUB_ENV
+          echo "RunMode=URL" >> $GITHUB_ENV
           ls
-          echo $GITHUB_ENV
 
       - name: 获取文件名
         id: GetFileName        
-        run: |          
-          if startsWith( ${{ github.event.inputs.RunMode }},'URL' )
+        run: | 
+          printf '%s\n' "$RunMode"
+          if startsWith( $RunMode,'URL' )
           then
-            FullName=$(basename "${{ github.event.inputs.IMG }}")
-            EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')
-            FName=$(basename "$FullName")
-            echo "FullName=${FullName}" >> $GITHUB_ENV
-            echo "EName=${EName}" >> $GITHUB_ENV
-            echo "FName=${FName}" >> $GITHUB_ENV
-        env:
-          Test: ""
+            echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
+            echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
+            echo "FName=$(basename $FullName)" >> "$GITHUB_ENV"
+            ##echo "FullName=${FullName}" >> $GITHUB_ENV
+            ##echo "EName=${EName}" >> $GITHUB_ENV
+            ##echo "FName=${FName}" >> $GITHUB_ENV
+        ##env:
+         ## Test: ""
           
       - name: 显示文件名
         run: |
