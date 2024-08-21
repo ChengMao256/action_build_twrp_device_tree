@@ -29,8 +29,8 @@ jobs:
         id: getfilename        
         run: | 
           ##printf '%s\n' "$RunMode"
-          printf '%s\n' "$funmode"
-          if startsWith( echo "$RunMode",'URL' )
+          printf '%s\n' "Mode is $funmode"
+          if startsWith( "$RunMode",'URL' )
           then
             echo "FullName=$(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
           else
