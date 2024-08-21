@@ -77,10 +77,11 @@ jobs:
     steps:
       - name: Check Out
         uses: actions/checkout@v4		
-        run: ls
+        
         
       - name: 准备环境         
         run: |
+          ls ~/.cache
           sudo apt update
           sudo apt -y install cpio wget
           
@@ -103,7 +104,7 @@ jobs:
           key: |                    
             apt-cache-${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
             ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          ls ~/.cache/
+            ls ~/.cache/
       
 
 
