@@ -52,5 +52,5 @@ jobs:
             echo "文件名是：$FName"
             echo "扩展名是：$EName"
             echo "文件全名是：$FullName"
-          
+          fi
           
