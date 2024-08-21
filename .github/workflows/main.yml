@@ -35,8 +35,9 @@ jobs:
         id: setmode
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}
         run: |
-          echo "mode=true" >> "$GITHUB_OUTPUT"
-          echo "FullName= ${{ basename github.event.inputs.IMG }}" >> "$GITHUB_ENV"
+          echo "mode=true" >> "$GITHUB_OUTPUT"nmio
+          FullName=$(basename "${{ github.event.inputs.IMG }}")
+            echo "FullName=${FullName}" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
           
           
