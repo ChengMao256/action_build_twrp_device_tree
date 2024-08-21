@@ -19,6 +19,7 @@ jobs:
         id: setup
         if: startsWith(${{ github.event.inputs.IMG }}, 'http') || startsWith(${{ github.event.inputs.IMG }}, 'https')       
         run: |
+          echo "${{ github.event.inputs.IMG }}"
           echo "RunMode=URLDown" >> $GITHUB_ENV
           echo "mode=True" >> "$GITHUB_OUTPUT" 
           ls
