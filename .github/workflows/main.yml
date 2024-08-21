@@ -98,7 +98,7 @@ jobs:
       - name: 执行         
         run: |
           mkdir out        
-          python3 -m twrpdtgen -o ./out/ ./${{ env.$FullName }}
+          python3 -m twrpdtgen -o ./out/ ./env.$FullName 
 
 
       - name: 打压缩包
