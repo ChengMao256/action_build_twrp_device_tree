@@ -36,7 +36,7 @@ jobs:
         if: ${{ startsWith( github.event.inputs.IMG , 'http') }}
         run: |
           echo "mode=True" >> "$GITHUB_OUTPUT"
-          echo "FullName= $(basename github.event.inputs.IMG )" >> "$GITHUB_ENV"
+          echo "FullName= $(basename ${{ github.event.inputs.IMG }})" >> "$GITHUB_ENV"
           wget ${{ github.event.inputs.IMG }}
           
           
@@ -79,11 +79,11 @@ jobs:
         
           
           
-  initial_Pack:
-    runs-on: ubuntu-latest              
-    steps:
-      - name: Check Out
-        uses: actions/checkout@v4
+  #initial_Pack:
+   # runs-on: ubuntu-latest              
+    #steps:
+    #  - name: Check Out
+    #    uses: actions/checkout@v4
               
       - name: 准备Python3
         uses: actions/setup-python@v5
@@ -108,39 +108,39 @@ jobs:
       
 
 
-  build:
-    runs-on: ubuntu-latest
-    needs: [CheckMode, initial_Pack] 
+  #build:
+  #  runs-on: ubuntu-latest
+  # needs: [CheckMode, initial_Pack] 
     
-    env: 
-      FullName: ${{ needs.CheckMode.outputs.FullName }}
-      FName: ${{ needs.CheckMode.outputs.FName }}
-      EName: ${{ needs.CheckMode.outputs.EName }}
-    steps:
-      - name: 恢复环境
-        uses: actions/cache@main
-        with:
-          path: |            
-            /var/cache/apt
-            ~/.cache/pip
-          key: |            
-            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
-            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
-          restore-keys: | 
-            ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
-            apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
-            apt-cache-${{ runner.os }}-
-            download-cache-${{ github.event.inputs.IMG }}
-            download-cache
-            apt-cache-${{ runner.os }}-bulid-
-            apt-cache-${{ runner.os }}
+    #env: 
+    #  #FullName: ${{ needs.CheckMode.outputs.FullName }}
+    #  FName: ${{ needs.CheckMode.outputs.FName }}
+    #  EName: ${{ needs.CheckMode.outputs.EName }}
+    #steps:
+    #  - name: 恢复环境
+    #    uses: actions/cache@main
+    #    with:
+    #      path: |            
+    #        /var/cache/apt
+    #        ~/.cache/pip
+    #      key: |            
+    #        apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+    #        ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
+    #      restore-keys: | 
+    #        ${{ runner.os }}-pip-${{ github.event.inputs.IMG }}
+    #        apt-cache-${{ runner.os }}-${{ github.event.inputs.IMG }}
+    #        apt-cache-${{ runner.os }}-
+    #        download-cache-${{ github.event.inputs.IMG }}
+    #        download-cache
+    #        apt-cache-${{ runner.os }}-bulid-
+    #        apt-cache-${{ runner.os }}
             
-      - name: 恢复URL文件
-        if: ${{ needs.setup.outputs.mode }}
-        uses: actions/cache@main
-        with:
-          path: ./${{ github.event.inputs.IMG }}
-          key: download-cache-${{ github.event.inputs.IMG }} 
+    #  - name: 恢复URL文件
+    #    if: ${{ needs.setup.outputs.mode }}
+    #    uses: actions/cache@main
+    #    with:
+    #      path: ./${{ github.event.inputs.IMG }}
+    #      key: download-cache-${{ github.event.inputs.IMG }} 
           
       - name: 执行         
         run: |
