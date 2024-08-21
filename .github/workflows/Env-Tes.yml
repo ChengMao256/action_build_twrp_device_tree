@@ -44,13 +44,13 @@ jobs:
         id: splitname
         run: |
             echo "EName=$(echo "$FullName" | sed -n 's/^\(.*\)\.\([^.]*\)$/\2/p')" >> "$GITHUB_ENV"
-            echo "FName=$(basename $FullName)" >> "$GITHUB_ENV"
+            echo "FName=$(basename "$FullName")" >> "$GITHUB_ENV"
             
       - name: 显示文件名
         run: |
           if true
-            echo "文件名是：$S_FName"
-            echo "扩展名是：$S_EName"
-            echo "文件全名是：$S_FullName"
+            echo "文件名是：$FName"
+            echo "扩展名是：$EName"
+            echo "文件全名是：$FullName"
           
           
